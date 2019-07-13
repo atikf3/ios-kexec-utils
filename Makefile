@@ -1,38 +1,21 @@
-OBJROOT	=	BUILD/obj
-DSTROOT	=	BUILD/dst
-SYMROOT	=	BUILD/sym
-LDID	=	ldid
-SFLAGS	=	-Stfp0.plist
-SDKROOT	=	/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/
-CC	=	xcrun -sdk iphoneos clang -arch armv7
-CFLAGS	=	-no-integrated-as -DINLINE_IT_ALL
-LDFLAGS	=	-miphoneos-version-min=6.0 -framework IOKit -framework CoreFoundation
+.PHONY: all clean
 
-all:	multi_kloader kloader ibsspatch img3maker
+SIGN 		= ldid
+TARGET 		= kloader
+FLAGS 		= -framework IOKit -framework CoreFoundation -Wall
+IGCC 		?= xcrun -sdk iphoneos gcc 
+ARCH 		?= -arch arm64 -arch armv7 -arch armv7s
+AARCH 		= $(shell arch)
+UNAME 		= $(shell uname -s)
 
-kloader:	kloader.c
-	SDKROOT=$(SDKROOT) $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
-	$(LDID) $(SFLAGS) $@
+all: $(TARGET)
 
-multi_kloader:	multi_kloader.c
-	SDKROOT=$(SDKROOT) $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
-	$(LDID) $(SFLAGS) $@
-
-ibsspatch:		patch.c util.c ibootsup.c iboot_patcher.c
-	SDKROOT=$(SDKROOT) $(CC) $(CFLAGS) -o $@ patch.c util.c ibootsup.c iboot_patcher.c
-	$(LDID) $@
-
-img3maker:	img3maker.c
-	SDKROOT=$(SDKROOT) $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
-	$(LDID) $@
+$(TARGET): *.c
+		@echo "[INFO]: compiling $(TARGET).."
+		$(IGCC) $(ARCH) -o $@ $(FLAGS) $^
+		$(SIGN) -Stfp0.plist $@
+		@echo "OK: compiled $(TARGET) on $(UNAME) $(AARCH)"
 
 clean:
-	rm -f kloader ibsspatch img3maker multi_kloader
-	rm -rf $(OBJROOT) $(DSTROOT) $(SYMROOT)
+	rm -f $(TARGET)
 
-install:	all
-	mkdir -p $(DSTROOT)/usr/local/bin
-	install -c -m 755 multi_kloader $(DSTROOT)/usr/local/bin
-	install -c -m 755 kloader $(DSTROOT)/usr/local/bin
-	install -c -m 755 ibsspatch $(DSTROOT)/usr/local/bin
-	install -c -m 755 img3maker $(DSTROOT)/usr/local/bin
