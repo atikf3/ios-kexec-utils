@@ -601,7 +601,7 @@ uint32_t find_larm_init_tramp(uint32_t region, uint8_t *kdata, size_t ksize)
 static task_t get_kernel_task(void)
 {
     task_t kernel_task = MACH_PORT_NULL;
-    printf("[INFO]: Attemping to get kernel_task...\n");
+    printf("[INFO]: Attempting to get kernel_task...\n");
     kern_return_t ret = task_for_pid(mach_task_self(), 0x0, &kernel_task);
     if (ret != KERN_SUCCESS) {
         ret = host_get_special_port(mach_host_self(), HOST_LOCAL_NODE, 0x4, &kernel_task);
@@ -620,7 +620,7 @@ static vm_address_t get_kernel_base(task_t kernel_task, uint64_t kernel_vers) {
     unsigned int depth = 0;
     vm_region_submap_info_data_64_t info;
     mach_msg_type_number_t info_count = VM_REGION_SUBMAP_INFO_COUNT_64;
-    printf("[INFO]: Attemping to get kernel_base...\n");
+    printf("[INFO]: Attempting to get kernel_base...\n");
 
 #ifdef __arm__
     if (kernel_vers <= 10) {
@@ -668,7 +668,7 @@ static vm_address_t get_kernel_base(task_t kernel_task, uint64_t kernel_vers) {
 static vm_address_t get_kernel_base_plus(task_t kernel_task, uint64_t kernel_vers)
 {
     uint64_t addr = 0x0;
-    printf("[INFO]: Attemping to get kernel_base..\n");
+    printf("[INFO]: Attempting to get kernel_base...\n");
     if (kernel_vers == 15) {
             addr = KERNEL_SEARCH_ADDRESS_9 + KASLR_SLIDE;
     } else if (kernel_vers == 16 || kernel_vers == 17) {
@@ -921,6 +921,7 @@ int main(int argc, char *argv[]) {
     FILE *fd = fopen(argv[1], "rb");
     if (!fd) {
         printf("[ERROR]: Failed to open image file. Rebooting momentarily...\n");
+        sleep(3);
         reboot(0);
     }
 
@@ -966,7 +967,7 @@ int main(int argc, char *argv[]) {
         sysent_common += 0x4;
 
         if (*(uint32_t *)(sysent_common) == 0x0) {
-            printf("[ERROR]: Something is severely wrong. Rebooting momentarily.\n");
+            printf("[ERROR]: Something is severely wrong. Rebooting momentarily...\n");
             sleep(3);
             reboot(0);
         }
