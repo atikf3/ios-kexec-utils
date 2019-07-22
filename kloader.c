@@ -323,7 +323,7 @@ static vm_address_t get_kernel_base_plus(task_t kernel_task, uint64_t kernel_ver
             addr = KERNEL_SEARCH_ADDRESS_9 + KASLR_SLIDE;
     } else if (kernel_vers == 16 || kernel_vers == 17) {
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
-    } else if (kernel_vers >= 18 | kernel_vers <= 18.5) {
+    } else if (kernel_vers >= 18 || kernel_vers <= 18.5) {
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
     } else if (kernel_vers >= 18.5) {
         // [NOTE]: kernel_base isn't always 0x4000 at the end since iOS 12.2,
