@@ -323,9 +323,13 @@ static vm_address_t get_kernel_base_plus(task_t kernel_task, uint64_t kernel_ver
             addr = KERNEL_SEARCH_ADDRESS_9 + KASLR_SLIDE;
     } else if (kernel_vers == 16 || kernel_vers == 17) {
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
-    } else if (kernel_vers >= 18) {
-            printf("[INFO]: unknown kernel version detected, trying iOS 10 - 11 default address..\n");
+    } else if (kernel_vers >= 18 | kernel_vers <= 18.5) {
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
+    } else if (kernel_vers >= 18.5) {
+        // [NOTE]: kernel_base isn't always 0x4000 at the end since iOS 12.2,
+        // see: https://twitter.com/jaakerblom/status/1110835960143466496
+        printf("[INFO]: iOS 12.2 or above detected, trying default address anyways..\n");
+        addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
     } else { return -0x1; }
     while (1) {
         char *buf;
@@ -422,8 +426,7 @@ int main(int argc, char *argv[]) {
     uint64_t kernel_vers = strtoull(umu, NULL, 0x0);
     kernel_task = get_kernel_task();
 #ifdef __arm64__
-    if (kernel_vers >= 15) { kernel_base = get_kernel_base_plus(kernel_task, kernel_vers);
-    } else { kernel_base = get_kernel_base(kernel_task, kernel_vers); }
+    if (kernel_vers >= 15) { kernel_base = get_kernel_base_plus(kernel_task, kernel_vers); } else { kernel_base = get_kernel_base(kernel_task, kernel_vers); }
 #elif __arm__
     kernel_base = get_kernel_base(kernel_task, kernel_vers);
 #endif

@@ -14,6 +14,7 @@ II. support
 
 III. Note
 	> support for arm64 is not completely finished yet,
+	> thanks to JonathanSeals for the 64bits kernel_base code,
 	> Use the provided binary in the release if you don't need to change kloader source code.
 
 updated: 20.05.2019
