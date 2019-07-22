@@ -140,14 +140,14 @@ typedef struct pmap_partial_t
 
 static uint32_t bit_range(uint32_t x, int start, int end)
 {
-	x = (x << (31 - start)) >> (31 - start);
-	x = (x >> end);
-	return x;
+    x = (x << (31 - start)) >> (31 - start);
+    x = (x >> end);
+    return x;
 }
 
 static uint32_t ror(uint32_t x, int places)
 {
-	return (x >> places) | (x << (32 - places));
+    return (x >> places) | (x << (32 - places));
 }
 
 static int thumb_expand_imm_c(uint16_t imm12)
@@ -166,24 +166,24 @@ static int thumb_expand_imm_c(uint16_t imm12)
             return 0;
         }
     } else {
-    	uint32_t unrotated_value = 0x80 | bit_range(imm12, 6, 0);
-    	return ror(unrotated_value, bit_range(imm12, 11, 7));
+        uint32_t unrotated_value = 0x80 | bit_range(imm12, 6, 0);
+        return ror(unrotated_value, bit_range(imm12, 11, 7));
     }
 }
 
 static int insn_is_32bit(uint16_t *i)
 {
-	return (*i & 0xe000) == 0xe000 && (*i & 0x1800) != 0x0;
+    return (*i & 0xe000) == 0xe000 && (*i & 0x1800) != 0x0;
 }
 
 static int insn_is_bl(uint16_t *i)
 {
-	if ((*i & 0xf800) == 0xf000 && (*(i + 1) & 0xd000) == 0xd000)
-		return 1;
-	else if ((*i & 0xf800) == 0xf000 && (*(i + 1) & 0xd001) == 0xc000)
-		return 1;
-	else
-		return 0;
+    if ((*i & 0xf800) == 0xf000 && (*(i + 1) & 0xd000) == 0xd000)
+        return 1;
+    else if ((*i & 0xf800) == 0xf000 && (*(i + 1) & 0xd001) == 0xc000)
+        return 1;
+    else
+        return 0;
 }
 
 static uint32_t insn_bl_imm32(uint16_t *i)
@@ -203,163 +203,163 @@ static uint32_t insn_bl_imm32(uint16_t *i)
 
 static int insn_is_b_conditional(uint16_t *i)
 {
-	return (*i & 0xF000) == 0xD000 && (*i & 0x0F00) != 0x0F00 && (*i & 0x0F00) != 0xE;
+    return (*i & 0xF000) == 0xD000 && (*i & 0x0F00) != 0x0F00 && (*i & 0x0F00) != 0xE;
 }
 
 static int insn_is_b_unconditional(uint16_t *i)
 {
-	if ((*i & 0xF800) == 0xE000)
-		return 1;
-	else if ((*i & 0xF800) == 0xF000 && (*(i + 1) & 0xD000) == 9)
-		return 1;
-	else
-		return 0;
+    if ((*i & 0xF800) == 0xE000)
+        return 1;
+    else if ((*i & 0xF800) == 0xF000 && (*(i + 1) & 0xD000) == 9)
+        return 1;
+    else
+        return 0;
 }
 
 static int insn_is_ldr_literal(uint16_t *i)
 {
-	return (*i & 0xF800) == 0x4800 || (*i & 0xFF7F) == 0xF85F;
+    return (*i & 0xF800) == 0x4800 || (*i & 0xFF7F) == 0xF85F;
 }
 
 static int insn_ldr_literal_rt(uint16_t *i)
 {
-	if ((*i & 0xF800) == 0x4800)
-		return (*i >> 8) & 7;
-	else if ((*i & 0xFF7F) == 0xF85F)
-		return (*(i + 1) >> 12) & 0xF;
-	else
-		return 0;
+    if ((*i & 0xF800) == 0x4800)
+        return (*i >> 8) & 7;
+    else if ((*i & 0xFF7F) == 0xF85F)
+        return (*(i + 1) >> 12) & 0xF;
+    else
+        return 0;
 }
 
 static int insn_ldr_literal_imm(uint16_t *i)
 {
-	if ((*i & 0xF800) == 0x4800)
-		return (*i & 0xF) << 2;
-	else if ((*i & 0xFF7F) == 0xF85F)
-		return (*(i + 1) & 0xFFF) *(((*i & 0x0800) == 0x0800) ? 1 : -1);
-	else
-		return 0;
+    if ((*i & 0xF800) == 0x4800)
+        return (*i & 0xF) << 2;
+    else if ((*i & 0xFF7F) == 0xF85F)
+        return (*(i + 1) & 0xFFF) *(((*i & 0x0800) == 0x0800) ? 1 : -1);
+    else
+        return 0;
 }
 
 static int insn_ldr_imm_rt(uint16_t *i)
 {
-	return (*i & 7);
+    return (*i & 7);
 }
 
 static int insn_ldr_imm_rn(uint16_t *i)
 {
-	return ((*i >> 3) & 7);
+    return ((*i >> 3) & 7);
 }
 
 static int insn_ldr_imm_imm(uint16_t *i)
 {
-	return ((*i >> 6) & 0x1F);
+    return ((*i >> 6) & 0x1F);
 }
 
 static int insn_is_add_reg(uint16_t *i)
 {
-	if ((*i & 0xFE00) == 0x1800)
-		return 1;
-	else if ((*i & 0xFF00) == 0x4400)
-		return 1;
-	else if ((*i & 0xFFE0) == 0xEB00)
-		return 1;
-	else
-		return 0;
+    if ((*i & 0xFE00) == 0x1800)
+        return 1;
+    else if ((*i & 0xFF00) == 0x4400)
+        return 1;
+    else if ((*i & 0xFFE0) == 0xEB00)
+        return 1;
+    else
+        return 0;
 }
 
 static int insn_add_reg_rd(uint16_t *i)
 {
-	if ((*i & 0xFE00) == 0x1800)
-		return (*i & 7);
-	else if ((*i & 0xFF00) == 0x4400)
-		return (*i & 7) | ((*i & 0x80) >> 4);
-	else if ((*i & 0xFFE0) == 0xEB00)
-		return (*(i + 1) >> 8) & 0xF;
-	else
-		return 0;
+    if ((*i & 0xFE00) == 0x1800)
+        return (*i & 7);
+    else if ((*i & 0xFF00) == 0x4400)
+        return (*i & 7) | ((*i & 0x80) >> 4);
+    else if ((*i & 0xFFE0) == 0xEB00)
+        return (*(i + 1) >> 8) & 0xF;
+    else
+        return 0;
 }
 
 static int insn_add_reg_rn(uint16_t *i)
 {
-	if ((*i & 0xFE00) == 0x1800)
-		return ((*i >> 3) & 7);
-	else if ((*i & 0xFF00) == 0x4400)
-		return (*i & 7) | ((*i & 0x80) >> 4);
-	else if ((*i & 0xFFE0) == 0xEB00)
-		return (*i & 0xF);
-	else
-		return 0;
+    if ((*i & 0xFE00) == 0x1800)
+        return ((*i >> 3) & 7);
+    else if ((*i & 0xFF00) == 0x4400)
+        return (*i & 7) | ((*i & 0x80) >> 4);
+    else if ((*i & 0xFFE0) == 0xEB00)
+        return (*i & 0xF);
+    else
+        return 0;
 }
 
 static int insn_add_reg_rm(uint16_t *i)
 {
-	if ((*i & 0xFE00) == 0x1800)
-		return (*i >> 6) & 7;
-	else if ((*i & 0xFF00) == 0x4400)
-		return (*i >> 3) & 0xF;
-	else if ((*i & 0xFFE0) == 0xEB00)
-		return *(i + 1) & 0xF;
-	else
-		return 0;
+    if ((*i & 0xFE00) == 0x1800)
+        return (*i >> 6) & 7;
+    else if ((*i & 0xFF00) == 0x4400)
+        return (*i >> 3) & 0xF;
+    else if ((*i & 0xFFE0) == 0xEB00)
+        return *(i + 1) & 0xF;
+    else
+        return 0;
 }
 
 static int insn_is_movt(uint16_t *i)
 {
-	return (*i & 0xFBF0) == 0xF2C0 && (*(i + 1) & 0x8000) == 0;
+    return (*i & 0xFBF0) == 0xF2C0 && (*(i + 1) & 0x8000) == 0;
 }
 
 static int insn_movt_rd(uint16_t *i)
 {
-	return (*(i + 1) >> 8) & 0xF;
+    return (*(i + 1) >> 8) & 0xF;
 }
 
 static int insn_movt_imm(uint16_t *i)
 {
-	return ((*i & 0xF) << 12) | ((*i & 0x0400) << 1) | ((*(i + 1) & 0x7000) >> 4) | (*(i + 1) & 0xFF);
+    return ((*i & 0xF) << 12) | ((*i & 0x0400) << 1) | ((*(i + 1) & 0x7000) >> 4) | (*(i + 1) & 0xFF);
 }
 
 static int insn_is_mov_imm(uint16_t *i)
 {
-	if ((*i & 0xF800) == 0x2000)
-		return 1;
-	else if ((*i & 0xFBEF) == 0xF04F && (*(i + 1) & 0x8000) == 0)
-		return 1;
-	else if ((*i & 0xFBF0) == 0xF240 && (*(i + 1) & 0x8000) == 0)
-		return 1;
-	else
-		return 0;
+    if ((*i & 0xF800) == 0x2000)
+        return 1;
+    else if ((*i & 0xFBEF) == 0xF04F && (*(i + 1) & 0x8000) == 0)
+        return 1;
+    else if ((*i & 0xFBF0) == 0xF240 && (*(i + 1) & 0x8000) == 0)
+        return 1;
+    else
+        return 0;
 }
 
 static int insn_mov_imm_rd(uint16_t *i)
 {
-	if ((*i & 0xF800) == 0x2000)
-		return (*i >> 8) & 7;
-	else if ((*i & 0xFBEF) == 0xF04F && (*(i + 1) & 0x8000) == 0)
-		return (*(i + 1) >> 8) & 0xF;
-	else if ((*i & 0xFBF0) == 0xF240 && (*(i + 1) & 0x8000) == 0)
-		return (*(i + 1) >> 8) & 0xF;
-	else
-		return 0;
+    if ((*i & 0xF800) == 0x2000)
+        return (*i >> 8) & 7;
+    else if ((*i & 0xFBEF) == 0xF04F && (*(i + 1) & 0x8000) == 0)
+        return (*(i + 1) >> 8) & 0xF;
+    else if ((*i & 0xFBF0) == 0xF240 && (*(i + 1) & 0x8000) == 0)
+        return (*(i + 1) >> 8) & 0xF;
+    else
+        return 0;
 }
 
 static int insn_mov_imm_imm(uint16_t *i)
 {
-	if ((*i & 0xF800) == 0x2000)
-		return *i & 0xF;
-	else if ((*i & 0xFBEF) == 0xF04F && (*(i + 1) & 0x8000) == 0)
-		return thumb_expand_imm_c(((*i & 0x0400) << 1) | ((*(i + 1) & 0x7000) >> 4) | (*(i + 1) & 0xFF));
-	else if ((*i & 0xFBF0) == 0xF240 && (*(i + 1) & 0x8000) == 0)
-		return ((*i & 0xF) << 12) | ((*i & 0x0400) << 1) | ((*(i + 1) & 0x7000) >> 4) | (*(i + 1) & 0xFF);
-	else
-		return 0;
+    if ((*i & 0xF800) == 0x2000)
+        return *i & 0xF;
+    else if ((*i & 0xFBEF) == 0xF04F && (*(i + 1) & 0x8000) == 0)
+        return thumb_expand_imm_c(((*i & 0x0400) << 1) | ((*(i + 1) & 0x7000) >> 4) | (*(i + 1) & 0xFF));
+    else if ((*i & 0xFBF0) == 0xF240 && (*(i + 1) & 0x8000) == 0)
+        return ((*i & 0xF) << 12) | ((*i & 0x0400) << 1) | ((*(i + 1) & 0x7000) >> 4) | (*(i + 1) & 0xFF);
+    else
+        return 0;
 }
 
 static void *buggy_memmem(const void *haystack, size_t haystacklen, const void *needle, size_t needlelen)
 {
     if (haystack == NULL || haystacklen == 0x0 || needle == NULL || needlelen == 0x0) {
-    	printf("[ERROR]: Invalid argument(s) for buggy_memmem.\n");
-    	exit(1);
+        printf("[ERROR]: Invalid argument(s) for buggy_memmem.\n");
+        exit(1);
     }
 
     for (size_t i = 0; i < haystacklen; i++) { 
@@ -376,14 +376,14 @@ static uint16_t *find_last_insn_matching(uint32_t region, uint8_t *kdata, size_t
 {
     while ((uintptr_t)current_instruction > (uintptr_t)kdata) {
         if (insn_is_32bit(current_instruction - 2) && !insn_is_32bit(current_instruction - 3)) {
-        	current_instruction -= 2;
-    	} else {
-    		--current_instruction;
-    	}
+            current_instruction -= 2;
+        } else {
+            --current_instruction;
+        }
 
-    	if (match_func(current_instruction)) {
-    	    return current_instruction;
-    	}
+        if (match_func(current_instruction)) {
+            return current_instruction;
+        }
     }
 
     return NULL;
@@ -392,29 +392,29 @@ static uint16_t *find_last_insn_matching(uint32_t region, uint8_t *kdata, size_t
 // Given an instruction and a register, find the PC-relative address that was stored inside the register by the time the instruction was reached.
 static uint32_t find_pc_rel_value(uint32_t region, uint8_t *kdata, size_t ksize, uint16_t *insn, int reg)
 {
-	// Find the last instruction that completely wiped out this register
+    // Find the last instruction that completely wiped out this register
     int found = 0;
     uint16_t *current_instruction = insn;
     while ((uintptr_t)current_instruction > (uintptr_t)kdata) {
         if (insn_is_32bit(current_instruction - 2)) {
-        	current_instruction -= 2;
+            current_instruction -= 2;
         } else {
-        	--current_instruction;
+            --current_instruction;
         }
 
         if (insn_is_mov_imm(current_instruction) && insn_mov_imm_rd(current_instruction) == reg) {
-        	found = 1;
-        	break;
+            found = 1;
+            break;
         }
 
         if (insn_is_ldr_literal(current_instruction) && insn_ldr_literal_rt(current_instruction) == reg) {
-        	found = 1;
-        	break;
+            found = 1;
+            break;
         }
     }
 
     if (!found)
-    	return 0;
+        return 0;
 
     // Step through instructions, executing them as a virtual machine, only caring about instructions that affect the target register and are commonly used for PC-relative addressing.
     uint32_t value = 0;
@@ -427,8 +427,8 @@ static uint32_t find_pc_rel_value(uint32_t region, uint8_t *kdata, size_t ksize,
             value |= insn_movt_imm(current_instruction) << 16;
         } else if (insn_is_add_reg(current_instruction) && insn_add_reg_rd(current_instruction) == reg) {
             if (insn_add_reg_rm(current_instruction) != 15 || insn_add_reg_rn(current_instruction) != reg) {
-            	// Can't handle this kind of operation!
-            	return 0;
+                // Can't handle this kind of operation!
+                return 0;
             }
 
             value += ((uintptr_t)current_instruction - (uintptr_t)kdata) + 4;
@@ -453,7 +453,7 @@ static uint16_t *find_literal_ref(uint32_t region, uint8_t *kdata, size_t ksize,
         } else if (insn_is_ldr_literal(current_instruction)) {
             uintptr_t literal_address = (uintptr_t)kdata + ((((uintptr_t)current_instruction - (uintptr_t)kdata) + 4) & 0xFFFFFFFC) + insn_ldr_literal_imm(current_instruction);
             if (literal_address >= (uintptr_t) kdata && (literal_address + 4) <= ((uintptr_t)kdata + ksize)) {
-            	value[insn_ldr_literal_rt(current_instruction)] = *(uint32_t *)(literal_address);
+                value[insn_ldr_literal_rt(current_instruction)] = *(uint32_t *)(literal_address);
             }
         } else if (insn_is_movt(current_instruction)) {
             value[insn_movt_rd(current_instruction)] |= insn_movt_imm(current_instruction) << 16;
@@ -462,7 +462,7 @@ static uint16_t *find_literal_ref(uint32_t region, uint8_t *kdata, size_t ksize,
             if (insn_add_reg_rm(current_instruction) == 15 && insn_add_reg_rn(current_instruction) == reg) {
                 value[reg] += ((uintptr_t)current_instruction - (uintptr_t)kdata) + 4;
                 if (value[reg] == address) {
-                	return current_instruction;
+                    return current_instruction;
                 }
             }
         }
@@ -476,61 +476,61 @@ static uint16_t *find_literal_ref(uint32_t region, uint8_t *kdata, size_t ksize,
 // This points to kernel_pmap. Use that to change the page tables if necessary.
 uint32_t find_pmap_location(uint32_t region, uint8_t *kdata, size_t ksize)
 {
-	// Find location of the pmap_map_bd string.
+    // Find location of the pmap_map_bd string.
     uint8_t *pmap_map_bd = memmem(kdata, ksize, "\"pmap_map_bd\"", sizeof("\"pmap_map_bd\""));
     if (!pmap_map_bd)
-    	return 0;
+        return 0;
 
     // Find a reference to the pmap_map_bd string. That function also references kernel_pmap
     uint16_t *ptr = find_literal_ref(region, kdata, ksize, (uint16_t *)kdata, (uintptr_t)pmap_map_bd - (uintptr_t)kdata);
     if (!ptr)
-    	return 0;
+        return 0;
     
     // Find the beginning of it (we may have a version that throws panic after the function end).
     while (*ptr != 0xB5F0) {
-    	if ((uint8_t *)ptr == kdata)
-    		return 0;
-    	ptr--;
+        if ((uint8_t *)ptr == kdata)
+            return 0;
+        ptr--;
     }
 
     // Find the end of it.
     const uint8_t search_function_end[] = { 0xF0, 0xBD };
     ptr = memmem(ptr, ksize - ((uintptr_t)ptr - (uintptr_t)kdata), search_function_end, sizeof(search_function_end));
     if (!ptr)
-    	return 0;
+        return 0;
 
     // Find the last BL before the end of it. The third argument to it should be kernel_pmap
     uint16_t *bl = find_last_insn_matching(region, kdata, ksize, ptr, insn_is_bl);
     if (!bl)
-    	return 0;
+        return 0;
 
     // Find the last LDR R2, [R*] before it that's before any branches. If there are branches, then we have a version of the function that assumes kernel_pmap instead of being passed it.
     uint16_t *ldr_r2 = NULL;
     uint16_t *current_instruction = bl;
     while ((uintptr_t)current_instruction > (uintptr_t)kdata) {
         if (insn_is_32bit(current_instruction - 2) && !insn_is_32bit(current_instruction - 3)) {
-        	current_instruction -= 2;
+            current_instruction -= 2;
         } else {
-        	--current_instruction;
+            --current_instruction;
         }
 
         if (insn_ldr_imm_rt(current_instruction) == 2 && insn_ldr_imm_imm(current_instruction) == 0) {
-        	ldr_r2 = current_instruction;
-        	break; 
+            ldr_r2 = current_instruction;
+            break; 
         } else if (insn_is_b_conditional(current_instruction) || insn_is_b_unconditional(current_instruction)) {
-        	break;
+            break;
         }
     }
 
     // The function has a third argument, which must be kernel_pmap. Find out its address
     if (ldr_r2)
-    	return find_pc_rel_value(region, kdata, ksize, ldr_r2, insn_ldr_imm_rn(ldr_r2));
+        return find_pc_rel_value(region, kdata, ksize, ldr_r2, insn_ldr_imm_rn(ldr_r2));
 
     // The function has no third argument, Follow the BL.
     uint32_t imm32 = insn_bl_imm32(bl);
     uint32_t target = ((uintptr_t)bl - (uintptr_t)kdata) + 4 + imm32;
     if (target > ksize)
-    	return 0;
+        return 0;
 
     // Find the first PC-relative reference in this function.
     int found = 0;
@@ -549,7 +549,7 @@ uint32_t find_pmap_location(uint32_t region, uint8_t *kdata, size_t ksize)
     }
 
     if (!found)
-    	return 0;
+        return 0;
 
     return find_pc_rel_value(region, kdata, ksize, current_instruction, rd);
 }
@@ -560,14 +560,14 @@ uint32_t find_syscall0(uint32_t region, uint8_t *kdata, size_t ksize)
     const uint8_t syscall1_search[] = { 0x90, 0xB5, 0x01, 0xAF, 0x82, 0xB0, 0x09, 0x68, 0x01, 0x24, 0x00, 0x23 };
     void *ptr = memmem(kdata, ksize, syscall1_search, sizeof(syscall1_search));
     if (!ptr)
-    	return 0;
+        return 0;
 
     // Search for a pointer to syscall 1
     uint32_t ptr_address = (uintptr_t)ptr - (uintptr_t)kdata + region;
     uint32_t function = ptr_address | 1;
     void *syscall1_entry = memmem(kdata, ksize, &function, sizeof(function));
     if (!syscall1_entry)
-    	return 0;
+        return 0;
 
     // Calculate the address of syscall 0 from the address of the syscall 1 entry
     return (uintptr_t)syscall1_entry - (uintptr_t)kdata - 0x18;
@@ -580,17 +580,17 @@ uint32_t find_larm_init_tramp(uint32_t region, uint8_t *kdata, size_t ksize)
     const uint8_t search[] = { 0x01, 0x00, 0x00, 0x14, 0xDF, 0x4F, 0x03, 0xD5 };
     void *ptr = buggy_memmem(kdata, ksize, search, sizeof(search));
     if (ptr)
-    	return ((uintptr_t)ptr) - 0x8 - ((uintptr_t)kdata);
+        return ((uintptr_t)ptr) - 0x8 - ((uintptr_t)kdata);
 
 #else
     const uint8_t search[] = { 0x0E, 0xE0, 0x9F, 0xE7, 0xFF, 0xFF, 0xFF, 0xEA, 0xC0, 0x00, 0x0C, 0xF1 };
     void *ptr = buggy_memmem(kdata, ksize, search, sizeof(search));
     if (ptr)
-    	return ((uintptr_t)ptr) - ((uintptr_t)kdata);
+        return ((uintptr_t)ptr) - ((uintptr_t)kdata);
     const uint8_t search2[] = { 0x9F, 0xE5, 0xFF, 0xFF, 0xFF, 0xEA, 0xC0, 0x00, 0x0C, 0xF1 };
     ptr = buggy_memmem(kdata, ksize, search2, sizeof(search2));
     if (ptr)
-    	return ((uintptr_t)ptr) - 0x2 - ((uintptr_t)kdata);
+        return ((uintptr_t)ptr) - 0x2 - ((uintptr_t)kdata);
 
 #endif
 
@@ -604,10 +604,10 @@ static task_t get_kernel_task(void)
     printf("[INFO]: Attemping to get kernel_task...\n");
     kern_return_t ret = task_for_pid(mach_task_self(), 0x0, &kernel_task);
     if (ret != KERN_SUCCESS) {
-    	ret = host_get_special_port(mach_host_self(), HOST_LOCAL_NODE, 0x4, &kernel_task);
+        ret = host_get_special_port(mach_host_self(), HOST_LOCAL_NODE, 0x4, &kernel_task);
         if (ret != KERN_SUCCESS) {
-        	printf("[ERROR]: Failed to get both task_for_pid & host_get_special_port.\n");
-        	exit(-1);
+            printf("[ERROR]: Failed to get both task_for_pid & host_get_special_port.\n");
+            exit(-1);
         }
     }
 
@@ -624,10 +624,10 @@ static vm_address_t get_kernel_base(task_t kernel_task, uint64_t kernel_vers) {
 
 #ifdef __arm__
     if (kernel_vers <= 10) {
-    	addr = KERNEL_SEARCH_ADDRESS_2;
-    	return addr;
+        addr = KERNEL_SEARCH_ADDRESS_2;
+        return addr;
     } else {
-    	addr = KERNEL_SEARCH_ADDRESS;
+        addr = KERNEL_SEARCH_ADDRESS;
     }
 
 #elif __arm64__
@@ -637,7 +637,7 @@ static vm_address_t get_kernel_base(task_t kernel_task, uint64_t kernel_vers) {
 
     while (1) {
         if (vm_region_recurse_64(kernel_task, (vm_address_t *)&addr, &size, &depth, (vm_region_info_t)&info, &info_count) != KERN_SUCCESS)
-        	break;
+            break;
 
         if ((size > 1024 * 1024 * 1024)) {
             pointer_t buf;
@@ -648,7 +648,7 @@ static vm_address_t get_kernel_base(task_t kernel_task, uint64_t kernel_vers) {
                 addr -= 0x200000;
                 vm_read(kernel_task, addr + IMAGE_OFFSET, 0x512, &buf, &sz);
                 if (*((uint32_t *)buf) != MACHO_HEADER_MAGIC)
-                	break;
+                    break;
             }
 
             printf("OK: kernel_base = 0x%08lx\n", (uintptr_t)addr);
@@ -675,33 +675,33 @@ static vm_address_t get_kernel_base_plus(task_t kernel_task, uint64_t kernel_ver
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
     } else if (kernel_vers >= 18) {
             printf("[ERROR]: Unknown kernel version detected.\n");
-        	printf("         Assuming you're on iOS 10 or 11. You are on your own.\n");
+            printf("         Assuming you're on iOS 10 or 11. You are on your own.\n");
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
     } else {
-    	return -0x1;
+        return -0x1;
     }
     while (1) {
         char *buf;
         mach_msg_type_number_t sz = 0x0;
         kern_return_t ret = vm_read(kernel_task, addr, 0x200, (vm_offset_t *)&buf, &sz);
         if (ret) {
-        	goto next;
+            goto next;
         }
         if (*((uint32_t *)buf) == MACHO_HEADER_MAGIC) {
             int ret = vm_read(kernel_task, addr, 0x1000, (vm_offset_t *)&buf, &sz);
             if (ret != KERN_SUCCESS) {
-            	printf("[ERROR]: Failed vm_read (%i)\n", ret);
-            	goto next;
+                printf("[ERROR]: Failed vm_read (%i)\n", ret);
+                goto next;
             }
             for (uintptr_t i = addr; i < (addr + 0x2000); i += (ptrsize)) {
                 int ret = vm_read(kernel_task, i, 0x120, (vm_offset_t *)&buf, (mach_msg_type_number_t *)&sz);
                 if (ret != KERN_SUCCESS) {
-                	printf("[ERROR]: Failed vm_read (%i)\n", ret);
-                	exit(-1);
+                    printf("[ERROR]: Failed vm_read (%i)\n", ret);
+                    exit(-1);
                 }
                 if (!strcmp(buf, "__text") && !strcmp(buf + 0x10, "__PRELINK_TEXT")) {
-                	printf("OK: kernel_base = 0x%08lx\n", (uintptr_t)addr);
-                	return addr;
+                    printf("OK: kernel_base = 0x%08lx\n", (uintptr_t)addr);
+                    return addr;
                 }
             }
         }
@@ -763,15 +763,15 @@ int main(int argc, char *argv[]) {
     uint32_t chunksize = 2048;
 
     if (argc != 2) {
-    	printf("usage: %s [img]\n\n", argv[0]);
-    	printf("This will destroy the current running OS instance and fire up the specified image.\n");
-    	printf("You have been warned.\n");
-    	exit(1);
+        printf("usage: %s [img]\n\n", argv[0]);
+        printf("This will destroy the current running OS instance and fire up the specified image.\n");
+        printf("You have been warned.\n");
+        exit(1);
     }
 
     if (open(argv[1], O_RDONLY) == -0x1) {
-    	printf("[ERROR]: Failed to open %s.\n", argv[1]);
-    	return -0x1;
+        printf("[ERROR]: Failed to open %s.\n", argv[1]);
+        return -0x1;
     }
 
     /*
@@ -780,8 +780,8 @@ int main(int argc, char *argv[]) {
     sysctlbyname("kern.version", NULL, &size, NULL, 0x0);
     char *kern_vers = malloc(size);
     if (sysctlbyname("kern.version", kern_vers, &size, NULL, 0x0) == -0x1) {
-    	printf("[ERROR]: Failed to get kern.version via sysctl.\n");
-    	exit(-1);
+        printf("[ERROR]: Failed to get kern.version via sysctl.\n");
+        exit(-1);
     }
     printf("[INFO]: Kernel = %s\n", kern_vers);
 
@@ -796,8 +796,8 @@ int main(int argc, char *argv[]) {
         PHYS_OFF = T7000_PHYS_OFF;
         phys_addr_remap = 0x85eb00000;
     } else {
-    	printf("[ERROR]: Can't recognize the device.\n");
-    	exit(-1);
+        printf("[ERROR]: Can't recognize the device.\n");
+        exit(-1);
     }
 
 #elif __arm__
@@ -815,7 +815,7 @@ int main(int argc, char *argv[]) {
         phys_addr_remap = 0xbfe00000;
     } else {
         printf("[ERROR]: Can't recognize the device.\n");
-    	printf("         Assuming you're on an 8940-class device. You are on your own.\n");
+        printf("         Assuming you're on an 8940-class device. You are on your own.\n");
         PHYS_OFF = S5L8940_PHYS_OFF;
         phys_addr_remap = 0x9fe00000; // " "
     }
@@ -832,10 +832,10 @@ int main(int argc, char *argv[]) {
     sysctlbyname("kern.osrelease", NULL, &size, NULL, 0x0);
     char *umu = malloc(size);
     if (size) {
-    	sysctlbyname("kern.osrelease", umu, &size, NULL, 0x0);
+        sysctlbyname("kern.osrelease", umu, &size, NULL, 0x0);
     } else {
-    	printf("[ERROR]: Failed to get kern.osrelease via sysctl.\n");
-    	return -0x1;
+        printf("[ERROR]: Failed to get kern.osrelease via sysctl.\n");
+        return -0x1;
     }
 
     uint64_t kernel_vers = strtoull(umu, NULL, 0x0);
@@ -843,9 +843,9 @@ int main(int argc, char *argv[]) {
 
 #ifdef __arm64__
     if (kernel_vers >= 15)
-    	kernel_base = get_kernel_base_plus(kernel_task, kernel_vers);
+        kernel_base = get_kernel_base_plus(kernel_task, kernel_vers);
     else
-    	kernel_base = get_kernel_base(kernel_task, kernel_vers);
+        kernel_base = get_kernel_base(kernel_task, kernel_vers);
 
 #elif __arm__
     kernel_base = get_kernel_base(kernel_task, kernel_vers);
@@ -860,13 +860,13 @@ int main(int argc, char *argv[]) {
     uint8_t *kernel_dump = malloc(KERNEL_DUMP_SIZE + 0x1000);
 
     if (!kernel_dump) {
-    	printf("[ERROR]: Failed to malloc memory for kernel dump.\n");
-    	return -1;
+        printf("[ERROR]: Failed to malloc memory for kernel dump.\n");
+        return -1;
     }
     while (addr < (kernel_base + KERNEL_DUMP_SIZE)) {
         vm_read(kernel_task, addr, chunksize, &buf, (mach_msg_type_number_t *)&sz);
         if (!buf || sz == 0)
-        	continue;
+            continue;
         uint8_t *z = (uint8_t *)buf;
         addr += chunksize;
         bcopy(z, kernel_dump + e, chunksize);
@@ -895,8 +895,8 @@ int main(int argc, char *argv[]) {
 
     printf("[INFO]: Kernel pmap: tte_virt = 0x%08x | tte_phys = 0x%08x\n", tte_virt, tte_phys);
     if (PHYS_OFF != (tte_phys & ~0xFFFFFFF)) {
-    	printf("[ERROR]: physOff 0x%08x should be 0x%08x.\n", PHYS_OFF, tte_phys & ~0xFFFFFFF);
-    	return -1;
+        printf("[ERROR]: physOff 0x%08x should be 0x%08x.\n", PHYS_OFF, tte_phys & ~0xFFFFFFF);
+        return -1;
     }
 
     /*
@@ -916,13 +916,13 @@ int main(int argc, char *argv[]) {
     printf("           Security has also been reduced by an expontential factor. You have been warned.");
 
     if (signal(SIGINT, SIG_IGN) != SIG_IGN)
-    	signal(SIGINT, SIG_IGN);
+        signal(SIGINT, SIG_IGN);
 
     FILE *fd = fopen(argv[1], "rb");
     if (!fd) {
-    	printf("[ERROR]: Failed to open image file. Rebooting momentarily...\n");
-    	reboot(0);
-	}
+        printf("[ERROR]: Failed to open image file. Rebooting momentarily...\n");
+        reboot(0);
+    }
 
     fseek(fd, 0x0, SEEK_END);
     int length = ftell(fd);
@@ -934,17 +934,17 @@ int main(int argc, char *argv[]) {
     bcopy((void *)image, (void *)0x7fe00000, length);
 
     if (*(uint32_t *)image == 'Img3') {
-    	printf("[ERROR]: IMG3 files are not supported.\n");
-    	exit(1);
+        printf("[ERROR]: IMG3 files are not supported.\n");
+        exit(1);
     }
 
     if (!strcmp((const char *)image + 0x7, "IM4P")) {
-    	printf("[ERROR]: IM4P / IMG4 files are not supported.\n");
-    	exit(1);
+        printf("[ERROR]: IM4P / IMG4 files are not supported.\n");
+        exit(1);
     }
 
     if (*(uint32_t *)0x7fe00000 != 0xea00000e)
-    	printf("[ERROR]: This doesn't seem like an ARM image. Continuing regardless...\n");
+        printf("[ERROR]: This doesn't seem like an ARM image. Continuing regardless...\n");
 
     printf("[INFO]: Image information: %s\n", (char *)0x7fe00000 + 0x200);
     printf("[INFO]: Image information: %s\n", (char *)0x7fe00000 + 0x240);
@@ -962,13 +962,13 @@ int main(int argc, char *argv[]) {
      * fuck evasi0n7
      */
     if (*(uint32_t *)(sysent_common) == 0x0) {
-    	printf("[INFO]: iOS 7 detected, adjusting base 0x%08x to 0x%08x\n", sysent_common, *(uint32_t *)(sysent_common));
+        printf("[INFO]: iOS 7 detected, adjusting base 0x%08x to 0x%08x\n", sysent_common, *(uint32_t *)(sysent_common));
         sysent_common += 0x4;
 
         if (*(uint32_t *)(sysent_common) == 0x0) {
-        	printf("[ERROR]: Something is severely wrong. Rebooting momentarily.\n");
-        	sleep(3);
-        	reboot(0);
+            printf("[ERROR]: Something is severely wrong. Rebooting momentarily.\n");
+            sleep(3);
+            reboot(0);
         }
     }
 
@@ -1003,7 +1003,7 @@ int main(int argc, char *argv[]) {
 
     printf("Syncing disks.\n");
     for (int synch = 0; synch < 10; synch++)
-    	sync();
+        sync();
     sleep(1);
 
     while (1) {
@@ -1012,10 +1012,10 @@ int main(int argc, char *argv[]) {
         if (fb != MACH_PORT_NULL) { 
             kern_return_t kr = IOPMSleepSystem(fb);
             if (kr) {
-            	printf("[WARNING]: IOPMSleepSystem returned %x.\n", kr);
+                printf("[WARNING]: IOPMSleepSystem returned %x.\n", kr);
             }
         } else {
-        	printf("[ERROR]: Failed to get PM root port.\n");
+            printf("[ERROR]: Failed to get PM root port.\n");
         }
         
         sleep(3);

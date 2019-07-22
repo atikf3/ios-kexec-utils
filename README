@@ -3,12 +3,12 @@ ios-kexec-utils | kloader
 kloader was made by winocm and improved by xerub, Jonathan Seals, and Yui.
 
 Compilation requirements:
-	- Xcode, ldid, and basic compilation utilities
+    - Xcode, ldid, and basic compilation utilities
 
 Usage requirements:
-	- armv7(s) device on iOS 3.1 through 10.3.3
-	- arm64 device on iOS 7.0 through 10.3.3+
-	- Jailbreak with either a task_for_pid(0) or host_get_special_port(4) patch
+    - armv7(s) device on iOS 3.1 through 10.3.3
+    - arm64 device on iOS 7.0 through 10.3.3+
+    - Jailbreak with either a task_for_pid(0) or host_get_special_port(4) patch
 
 Images supported: LLB, iBoot, iBSS, iBEC
 
