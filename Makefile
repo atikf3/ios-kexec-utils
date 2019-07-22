@@ -11,11 +11,10 @@ UNAME 		= $(shell uname -s)
 all: $(TARGET)
 
 $(TARGET): *.c
-		@echo "[INFO]: compiling $(TARGET).."
+		@echo "[INFO]: Compiling $(TARGET)..."
 		$(IGCC) $(ARCH) -o $@ $(FLAGS) $^
 		$(SIGN) -Stfp0.plist $@
-		@echo "OK: compiled $(TARGET) on $(UNAME) $(AARCH)"
+		@echo "OK: Compiled $(TARGET) on $(UNAME) $(AARCH)"
 
 clean:
 	rm -f $(TARGET)
-

@@ -1,19 +1,17 @@
 ios-kexec-utils | kloader
 
-> kloader was made by winocm, improved by xerub & yui.
+kloader was made by winocm and improved by xerub, Jonathan Seals, and Yui.
 
-I. Requierements
-	1. jailbroken device,
-	2. armv7(s) - arm64 device,
-	3. xcode - ldid - basic compiling tools.
+Compilation requirements:
+	- Xcode, ldid, and basic compilation utilities
 
-II. support
-	> images supported: LLB/iBoot/iBSS/iBEC,
-	> armv7(s) support for iPhoneOS 3.1 - 10.3.3 (need a jailbreak with tfp0),
-	> arm64 support for iOS 7.0 - 10.3.3+ (need a jailbreak with tfp0 and patched image).
+Usage requirements:
+	- armv7(s) device on iOS 3.1 through 10.3.3
+	- arm64 device on iOS 7.0 through 10.3.3+
+	- Jailbreak with either a task_for_pid(0) or host_get_special_port(4) patch
 
-III. Note
-	> support for arm64 is not completely finished yet,
-	> Use the provided binary in the release if you don't need to change kloader source code.
+Images supported: LLB, iBoot, iBSS, iBEC
 
-updated: 20.05.2019
+Support for arm64 is not completely finished yet.
+
+README updated: 21.07.2019
