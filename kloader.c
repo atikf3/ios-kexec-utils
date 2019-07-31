@@ -678,8 +678,8 @@ static vm_address_t get_kernel_base_plus(task_t kernel_task, uint64_t kernel_ver
     } else if (kernel_vers >= 18.5) {
             // [NOTE]: kernel_base isn't always 0x4000 at the end since iOS 12.2,
             // see: https://twitter.com/jaakerblom/status/1110835960143466496
-            printf("[ERROR]: iOS 12.2 or above detected.\n");
-            printf("         Using default address anyways. You are on your own.\n");
+            printf("[WARNING]: iOS 12.2 or above detected.\n");
+            printf("           Using default address anyways. You are on your own.\n");
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
     } else {
         return -0x1;
@@ -818,8 +818,8 @@ int main(int argc, char *argv[]) {
         PHYS_OFF = S5L8940_PHYS_OFF;
         phys_addr_remap = 0xbfe00000;
     } else {
-        printf("[ERROR]: Can't recognize the device.\n");
-        printf("         Assuming you're on an 8940-class device. You are on your own.\n");
+        printf("[WARNING]: Can't recognize the device.\n");
+        printf("           Assuming you're on an 8940-class device. You are on your own.\n");
         PHYS_OFF = S5L8940_PHYS_OFF;
         phys_addr_remap = 0x9fe00000; // " "
     }
@@ -949,7 +949,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (*(uint32_t *)0x7fe00000 != 0xea00000e)
-        printf("[ERROR]: This doesn't seem like an ARM image. Continuing regardless...\n");
+        printf("[WARNING]: This doesn't seem like an ARM image. Continuing regardless...\n");
 
     printf("[INFO]: Image information: %s\n", (char *)0x7fe00000 + 0x200);
     printf("[INFO]: Image information: %s\n", (char *)0x7fe00000 + 0x240);
