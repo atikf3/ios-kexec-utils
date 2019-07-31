@@ -917,7 +917,7 @@ int main(int argc, char *argv[]) {
     vm_write(kernel_task, tte_virt + tte_off, buf, sz);
 
     printf("[WARNING]: Kernel TTE entries written. System stability is no longer guaranteed.\n");
-    printf("           Security has also been reduced by an exponential factor. You have been warned.");
+    printf("           Security has also been reduced by an exponential factor. You have been warned.\n");
 
     if (signal(SIGINT, SIG_IGN) != SIG_IGN)
         signal(SIGINT, SIG_IGN);
