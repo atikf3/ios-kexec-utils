@@ -7,11 +7,11 @@ Compilation requirements:
 
 Usage requirements:
     - armv7(s) device on iOS 3.1 through 10.3.3
-    - arm64 device on iOS 7.0 through 10.3.3+
+    - arm64 device on iOS 7.0 through 11.0+
     - Jailbreak with either a task_for_pid(0) or host_get_special_port(4) patch
 
 Images supported: LLB, iBoot, iBSS, iBEC
 
 Support for arm64 is not completely finished yet.
 
-README updated: 21.07.2019
+Updated: 2019-07-31
