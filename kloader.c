@@ -673,9 +673,13 @@ static vm_address_t get_kernel_base_plus(task_t kernel_task, uint64_t kernel_ver
             addr = KERNEL_SEARCH_ADDRESS_9 + KASLR_SLIDE;
     } else if (kernel_vers == 16 || kernel_vers == 17) {
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
-    } else if (kernel_vers >= 18) {
-            printf("[ERROR]: Unknown kernel version detected.\n");
-            printf("         Assuming you're on iOS 10 or 11. You are on your own.\n");
+    } else if (kernel_vers >= 18 || kernel_vers <= 18.5) {
+            addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
+    } else if (kernel_vers >= 18.5) {
+            // [NOTE]: kernel_base isn't always 0x4000 at the end since iOS 12.2,
+            // see: https://twitter.com/jaakerblom/status/1110835960143466496
+            printf("[ERROR]: iOS 12.2 or above detected.\n");
+            printf("         Using default address anyways. You are on your own.\n");
             addr = KERNEL_SEARCH_ADDRESS_10 + KASLR_SLIDE;
     } else {
         return -0x1;
