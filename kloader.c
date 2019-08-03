@@ -750,7 +750,7 @@ static void generate_ttb_entries(void)
     printf("[INFO]: Remapped 0x%08x to 0x%08x (TTE: 0x%08x)\n", ttb_remap_addr_base, phys_addr_remap, L1_PROTO_TTE(phys_addr_remap));
     printf("[INFO]: TTE offset beginning for shadowmap = 0x%08x\n", SHADOWMAP_BEGIN_OFF);
     printf("[INFO]: TTE offset ending for shadowmap = 0x%08x\n", SHADOWMAP_END_OFF);
-    prtinf("[INFO]: TTE size = 0x%08x\n", SHADOWMAP_SIZE);
+    printf("[INFO]: TTE size = 0x%08x\n", SHADOWMAP_SIZE);
 #endif
 
     printf("[INFO]: Base address for remap = 0x%08x, physBase = 0x%08x\n", PHYS_OFF, phys_addr_remap);
